@@ -1,11 +1,12 @@
 import os
 
-from flask import Flask, session
+from flask import Flask, session, render_template, redirect, request, url_for, g
 from flask_session import Session
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 
 app = Flask(__name__)
+app.secret_key = os.urandom(24)
 
 # Check for environment variable
 if not os.getenv("DATABASE_URL"):
@@ -21,6 +22,57 @@ engine = create_engine(os.getenv("DATABASE_URL"))
 db = scoped_session(sessionmaker(bind=engine))
 
 
-@app.route("/")
+@app.route('/', methods= ['GET', 'POST'])
 def index():
-    return "Project 1: TODO"
+    if request.method =='POST' :
+        session.pop('user', None) 
+
+        if request.form['password'] == 'password':
+             session['user'] = request.form['username']
+             return redirect(url_for('protected'))
+        
+        else:      
+            return render_template("failed.html")
+    
+    else:
+        return render_template("index.html")
+
+@app.route('/protected')
+def protected():
+    return render_template('protected.html', username=session['user'])
+
+
+
+@app.route('/getsession')
+def getsession():
+    if 'user' in session:
+        return session ['user']
+    
+    return 'not logged in!'
+ 
+
+@app.route('/dropsession')
+def dropsession():
+    session.pop('user', None)
+    return 'Dropped!'
+
+
+    
+
+
+""" @app.route('/protected')
+def protected():
+        if g.user:
+            return render_template('protected.html')
+        return redirect(url_for('index'))
+
+@app.before_request
+def before_request():
+    g.user = None
+    if 'user' in session:
+            return session['user'] """
+
+""" @app.route('/')
+def index():
+    session['user'] = 'test'
+    return 'index' """
