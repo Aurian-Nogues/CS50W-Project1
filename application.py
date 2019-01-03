@@ -37,9 +37,25 @@ def index():
     else:
         return render_template("index.html")
 
+@app.route('/register', methods= ['POST', 'GET'])
+def register():
+    if request.method == 'POST' :
+        session.pop('user', None)
+        session['user'] = request.form['username']
+        return redirect(url_for('protected'))
+    else:
+        return render_template("register.html")
+
+
 @app.route('/protected')
 def protected():
     return render_template('protected.html', username=session['user'])
+
+@app.route('/logout')
+def logout():
+    session.pop('user', None)
+    return render_template('logout.html')
+
 
 
 
@@ -51,10 +67,6 @@ def getsession():
     return 'not logged in!'
  
 
-@app.route('/dropsession')
-def dropsession():
-    session.pop('user', None)
-    return 'Dropped!'
 
 
     

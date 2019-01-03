@@ -1,4 +1,4 @@
-{% extends "layout.html" %}
+{% extends "layout0.html" %}
 
 {% block heading %}
 {% endblock %}
@@ -6,5 +6,7 @@
 {% block body %}
 
 <a href="{{ url_for('index') }}">Login failed, please try again</a>
+<br>
+<a href="{{ url_for('register') }}">If you don't already have an account, please register</a>
 
 {% endblock %}
