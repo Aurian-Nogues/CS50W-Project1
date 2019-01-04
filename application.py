@@ -27,12 +27,20 @@ def index():
     if request.method =='POST' :
         session.pop('user', None) 
 
-        if request.form['password'] == 'password':
-             session['user'] = request.form['username']
+        submitted_username = request.form['username']
+        submitted_password = request.form['password']
+        user = db.execute("SELECT id, login, password FROM users WHERE login = :login", {"login": submitted_username}).fetchone()
+    
+        if db.execute("SELECT id, login, password FROM users WHERE login = :login", {"login": submitted_username}).rowcount == 0:
+            error=("User not found in database")
+            return render_template("failed.html", error=error)
+        elif submitted_password != user.password:
+            error=("Wrong password")
+            return render_template("failed.html", error=error)
+        elif submitted_password == user.password:
+             session['user'] = user.login
              return redirect(url_for('protected'))
-        
-        else:      
-            return render_template("failed.html")
+
     
     else:
         return render_template("index.html")
@@ -49,7 +57,7 @@ def register():
 
 @app.route('/protected')
 def protected():
-    return render_template('protected.html', username=session['user'])
+        return render_template('protected.html', username=session['user'])
 
 @app.route('/logout')
 def logout():

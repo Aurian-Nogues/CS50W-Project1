@@ -20,10 +20,6 @@ db = scoped_session(sessionmaker(bind=engine))
 
 def main():
 
-   # users=db.execute("SELECT id, login, password FROM users").fetchall()
-  #  for user in users:   
-   #     print(f"{user.id} {user.login} {user.password}")
-
     user_username= str(input("\n User name: "))
     user_password= str(input("\n User password: "))
     user = db.execute("SELECT id, login, password FROM users WHERE login = :login", {"login": user_username}).fetchone()

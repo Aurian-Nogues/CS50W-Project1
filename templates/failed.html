@@ -5,8 +5,9 @@
 
 {% block body %}
 
-<a href="{{ url_for('index') }}">Login failed, please try again</a>
+<h1>{{error}}</h1>
+<a href="{{ url_for('index') }}">Go back to login page</a>
 <br>
-<a href="{{ url_for('register') }}">If you don't already have an account, please register</a>
+<a href="{{ url_for('register') }}">Create a new account</a>
 
 {% endblock %}
