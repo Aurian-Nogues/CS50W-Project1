@@ -68,11 +68,12 @@ def register():
             return render_template("failed.html", error=error)
 
 
-
+#page reached once logged in
 @app.route('/protected')
 def protected():
         return render_template('protected.html', username=session['user'])
 
+#log out page
 @app.route('/logout')
 def logout():
     session.pop('user', None)
