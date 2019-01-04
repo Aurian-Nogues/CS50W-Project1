@@ -22,6 +22,7 @@ engine = create_engine(os.getenv("DATABASE_URL"))
 db = scoped_session(sessionmaker(bind=engine))
 
 
+#index page, handles the login 
 @app.route('/', methods= ['GET', 'POST'])
 def index():
     if request.method =='POST' :
@@ -45,14 +46,27 @@ def index():
     else:
         return render_template("index.html")
 
+#register page, handles addition of new users
 @app.route('/register', methods= ['POST', 'GET'])
 def register():
-    if request.method == 'POST' :
-        session.pop('user', None)
-        session['user'] = request.form['username']
-        return redirect(url_for('protected'))
-    else:
+    if request.method == "GET" :
         return render_template("register.html")
+
+    elif request.method == 'POST' :
+        session.pop('user', None)
+        submitted_username = request.form['username']
+        submitted_password = request.form['password']
+
+        #only add user in database if there is no userexisting user with the same login
+        if db.execute("SELECT id, login, password FROM users WHERE login = :login", {"login": submitted_username}).rowcount == 0:
+            db.execute("INSERT INTO users (login, password) Values (:login, :password)", {"login": submitted_username, "password": submitted_password})
+            db.commit()
+            success=("Successfully created a new account, your username is: ")
+            return render_template("creation_succes.html", success=success, username=submitted_username)
+        else:
+            error=("The username you selected already exists, please select another username")
+            return render_template("failed.html", error=error)
+
 
 
 @app.route('/protected')
