@@ -22,9 +22,20 @@
           </nav>
     </head>
     <body>
-        <h1>{% block heading %}{% endblock %}</h1>
+        <div class="container">
+            <div class="row">
 
-        {% block body %}
+                <!-- First section of the page-->
+                <div class="col-lg-4 col-sm-6">
+                    {% block body1 %}
+                    {% endblock %}
+
+                </div>
+                <!-- Second section of the page-->
+                <div class="col-lg-8 col-sm-6">
+        {% block body2 %}
         {% endblock %}
+      </div>
+    </div>
     </body>
 </html>
