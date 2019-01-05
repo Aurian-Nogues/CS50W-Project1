@@ -72,10 +72,18 @@ def register():
 @app.route('/protected', methods= ['POST', 'GET'])
 def protected():
         if request.method == 'GET' :
+            #if arriving on page through get just diplay the whole database
             books = db.execute("SELECT * FROM books").fetchall()
             return render_template('protected.html', books=books)
         elif request.method == 'POST' :
-            return render_template('protected.html')
+            #if arriving on page through search
+            searchtype = request.form['searchtype']
+            keyword = ("keyword")
+            books = db.execute("SELECT * FROM books WHERE year = 2003").fetchall()
+      #      books = db.execute("SELECT * FROM books WHERE ").fetchall()
+        #       passengers = db.execute("SELECT name FROM passengers WHERE flight_id = :flight_id",
+             #               {"flight_id": flight_id}).fetchall()
+            return render_template('protected.html', books=books)
 
 
 #log out page

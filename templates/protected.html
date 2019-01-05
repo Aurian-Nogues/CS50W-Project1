@@ -7,7 +7,7 @@
 
 <form>
   <div class="form-group">
-    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Type here to find a book!">
+    <input name ="keyword" type="text" class="form-control" id="exampleFormControlInput1" placeholder="Type here to find a book!">
   </div>
   <div class="form-check form-check-inline">
         <input class="form-check-input" type="radio" name="searchtype" id="inlineRadio1" value="all">
@@ -32,6 +32,10 @@
 {% endblock %}
 
 {% block body2 %}
+
+<h1>{{searchtype}}</h1>
+<h1>{{keyword}}</h1>
+<h1>test</h1>
 
 <table class="table table-striped">
         <thead>
