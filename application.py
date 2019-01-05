@@ -69,9 +69,13 @@ def register():
 
 
 #page reached once logged in
-@app.route('/protected')
+@app.route('/protected', methods= ['POST', 'GET'])
 def protected():
-        return render_template('protected.html', username=session['user'])
+        if request.method == 'GET' :
+            return render_template('protected.html')
+        elif request.method == 'POST' :
+            return render_template('protected.html')
+
 
 #log out page
 @app.route('/logout')
