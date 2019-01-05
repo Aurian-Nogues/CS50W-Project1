@@ -72,7 +72,8 @@ def register():
 @app.route('/protected', methods= ['POST', 'GET'])
 def protected():
         if request.method == 'GET' :
-            return render_template('protected.html')
+            books = db.execute("SELECT * FROM books").fetchall()
+            return render_template('protected.html', books=books)
         elif request.method == 'POST' :
             return render_template('protected.html')
 
