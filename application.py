@@ -40,7 +40,7 @@ def index():
             return render_template("failed.html", error=error)
         elif submitted_password == user.password:
              session['user'] = user.login
-             return redirect(url_for('protected'))
+             return redirect(url_for('search'))
 
     
     else:
@@ -69,8 +69,9 @@ def register():
 
 
 #page reached once logged in
-@app.route('/protected', methods= ['POST', 'GET'])
-def protected():
+@app.route('/search', methods= ['POST', 'GET'])
+def search():
+
     if request.method == 'POST' :
         searchtype = request.form['searchtype']
         keyword = request.form['keyword']
@@ -82,19 +83,22 @@ def protected():
             books = db.execute("SELECT * FROM books WHERE year = :keyword",
                                 {"keyword": keyword}).fetchall()
         elif searchtype == "title":
-            books = db.execute("SELECT * FROM books WHERE title = :keyword",
+            keyword = f'%{keyword}%'
+            books = db.execute("SELECT * FROM books WHERE title ILIKE :keyword",
                                 {"keyword": keyword}).fetchall()
         elif searchtype == "author":
-            books = db.execute("SELECT * FROM books WHERE author = :keyword",
+            keyword = f'%{keyword}%'
+            books = db.execute("SELECT * FROM books WHERE author ILIKE :keyword",
                                 {"keyword": keyword}).fetchall() 
         elif searchtype == "isbn":
-            books = db.execute("SELECT * FROM books WHERE isbn = :keyword",
+            keyword = f'%{keyword}%'
+            books = db.execute("SELECT * FROM books WHERE isbn ILIKE :keyword",
                                 {"keyword": keyword}).fetchall() 
-
-        return render_template('protected.html', books=books)
+      
+        return render_template('search.html', books=books)
     else :
         books = db.execute("SELECT * FROM books").fetchall()
-    return render_template('protected.html', books=books)               
+    return render_template('search.html', books=books)               
        
 #log out page
 @app.route('/logout')
