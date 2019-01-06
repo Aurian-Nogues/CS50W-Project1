@@ -71,29 +71,20 @@ def register():
 #page reached once logged in
 @app.route('/protected', methods= ['POST', 'GET'])
 def protected():
-        if request.method == 'GET' :
-            #if arriving on page through get just diplay the whole database
-            books = db.execute("SELECT * FROM books").fetchall()
-            return render_template('protected.html', books=books)
-        elif request.method == 'POST' :
-            #if arriving on page through search
-            searchtype = request.form['searchtype']
-            keyword = ("keyword")
-            books = db.execute("SELECT * FROM books WHERE year = 2003").fetchall()
-      #      books = db.execute("SELECT * FROM books WHERE ").fetchall()
-        #       passengers = db.execute("SELECT name FROM passengers WHERE flight_id = :flight_id",
-             #               {"flight_id": flight_id}).fetchall()
-            return render_template('protected.html', books=books)
-
-
+    if request.method == 'POST' :
+        searchtype = request.form['searchtype']
+        keyword = request.form['keyword']
+        books = db.execute("SELECT * FROM books WHERE year = 2003").fetchall()          
+        return render_template('protected.html', books=books, searchtype=searchtype, keyword=keyword)
+    else :
+        books = db.execute("SELECT * FROM books").fetchall()
+        return render_template('protected.html', books=books)               
+       
 #log out page
 @app.route('/logout')
 def logout():
     session.pop('user', None)
     return render_template('logout.html')
-
-
-
 
 @app.route('/getsession')
 def getsession():
@@ -102,25 +93,3 @@ def getsession():
     
     return 'not logged in!'
  
-
-
-
-    
-
-
-""" @app.route('/protected')
-def protected():
-        if g.user:
-            return render_template('protected.html')
-        return redirect(url_for('index'))
-
-@app.before_request
-def before_request():
-    g.user = None
-    if 'user' in session:
-            return session['user'] """
-
-""" @app.route('/')
-def index():
-    session['user'] = 'test'
-    return 'index' """

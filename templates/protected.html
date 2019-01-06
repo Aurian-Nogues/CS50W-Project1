@@ -5,7 +5,9 @@
 
 {% block body1 %}
 
-<form>
+</br>
+
+<form method = "post">
   <div class="form-group">
     <input name ="keyword" type="text" class="form-control" id="exampleFormControlInput1" placeholder="Type here to find a book!">
   </div>
@@ -29,13 +31,13 @@
         <button type="submit" class="btn btn-dark">Search</button>
 </form>
       
+
+
 {% endblock %}
 
 {% block body2 %}
 
-<h1>{{searchtype}}</h1>
-<h1>{{keyword}}</h1>
-<h1>test</h1>
+</br>
 
 <table class="table table-striped">
         <thead>
@@ -57,5 +59,7 @@
             {% endfor %}
         </tbody>
       </table>
+
+      
  
 {% endblock %}
