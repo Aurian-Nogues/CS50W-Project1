@@ -7,7 +7,7 @@
 
 </br>
 
-<form method = "post">
+<form method = "POST">
   <div class="form-group">
     <input name ="keyword" type="text" class="form-control" id="exampleFormControlInput1" placeholder="Type here to find a book!">
   </div>
@@ -38,8 +38,6 @@
 {% block body2 %}
 
 </br>
-<h1>{{searchtype}}</h1>
-<h1>{{keyword}}</h1>
 
 <table class="table table-striped">
         <thead>
@@ -53,15 +51,18 @@
         <tbody>
             {% for book in books %}
                 <tr>
-                    <td>{{book.title}}</td>
-                    <td>{{book.author}}</td>
-                    <td>{{book.year}}</td>
-                    <td>{{book.isbn}}</td>
+                    <td><a class="nav-item nav-link book-links" href="{{ url_for('book') }}">{{book.title}}</a></td>
+                    <td><a class="nav-item nav-link book-links" href="{{ url_for('book') }}">{{book.author}}</a></td>
+                    <td><a class="nav-item nav-link book-links" href="{{ url_for('book') }}">{{book.year}}</a></td>
+                    <td><a class="nav-item nav-link book-links" href="{{ url_for('book') }}">{{book.isbn}}</a></td>
                 </tr>
             {% endfor %}
         </tbody>
       </table>
 
-      
+      <a class="nav-item nav-link" href="#">Pricing</a>
  
 {% endblock %}
+<td>{{book.author}}</td>
+<td>{{book.year}}</td>
+<td>{{book.isbn}}</td>
