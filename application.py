@@ -104,15 +104,15 @@ def search():
 @app.route('/book', methods = ['POST', 'GET'])
 def book():
 
-    
     if request.method == "POST" :
         review = request.form['review']
         rating = request.form['rating']
-        if review == "":
-            review = "You submitted an empty review"
-    return render_template('book.html', review=review, rating=rating)
+       # if review == "":
+        #    review = "You submitted an empty review"
+        return render_template('book.html', review=review, rating=rating)
 
     return render_template('book.html')
+
 #log out page
 @app.route('/logout')
 def logout():

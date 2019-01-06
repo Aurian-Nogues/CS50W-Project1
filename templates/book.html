@@ -51,4 +51,10 @@
 <h1>{{review}}</h1>
 <h1>{{rating}}</h1>
  
+{% if review == "" %}
+<li>empty review</li>
+{% endif %}
+{% if review != "" %}
+<li>review</li>
+{% endif %}
 {% endblock %}
