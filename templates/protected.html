@@ -12,8 +12,8 @@
     <input name ="keyword" type="text" class="form-control" id="exampleFormControlInput1" placeholder="Type here to find a book!">
   </div>
   <div class="form-check form-check-inline">
-        <input class="form-check-input" type="radio" name="searchtype" id="inlineRadio1" value="all">
-        <label class="form-check-label" for="inlineRadio1">All</label>
+        <input class="form-check-input" type="radio" checked="" name="searchtype" id="inlineRadio1" value="all">
+        <label class="form-check-label btn-default" for="inlineRadio1">All</label>
       </div>
       <div class="form-check form-check-inline">
         <input class="form-check-input" type="radio" name="searchtype" id="inlineRadio2" value="title">
@@ -24,7 +24,11 @@
             <label class="form-check-label" for="inlineRadio2">Author</label>
         </div>
         <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="searchtype" id="inlineRadio2" value="ISBN">
+          <input class="form-check-input" type="radio" name="searchtype" id="inlineRadio2" value="year">
+          <label class="form-check-label" for="inlineRadio2">Year</label>
+      </div>
+        <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="searchtype" id="inlineRadio2" value="isbn">
                 <label class="form-check-label" for="inlineRadio2">ISBN</label>
         </div>
     </br>
@@ -38,6 +42,8 @@
 {% block body2 %}
 
 </br>
+<h1>{{searchtype}}</h1>
+<h1>{{keyword}}</h1>
 
 <table class="table table-striped">
         <thead>

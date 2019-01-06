@@ -74,11 +74,27 @@ def protected():
     if request.method == 'POST' :
         searchtype = request.form['searchtype']
         keyword = request.form['keyword']
-        books = db.execute("SELECT * FROM books WHERE year = 2003").fetchall()          
-        return render_template('protected.html', books=books, searchtype=searchtype, keyword=keyword)
+
+        if keyword == "":
+            books = db.execute("SELECT * FROM books").fetchall()
+        
+        elif searchtype == "year":
+            books = db.execute("SELECT * FROM books WHERE year = :keyword",
+                                {"keyword": keyword}).fetchall()
+        elif searchtype == "title":
+            books = db.execute("SELECT * FROM books WHERE title = :keyword",
+                                {"keyword": keyword}).fetchall()
+        elif searchtype == "author":
+            books = db.execute("SELECT * FROM books WHERE author = :keyword",
+                                {"keyword": keyword}).fetchall() 
+        elif searchtype == "isbn":
+            books = db.execute("SELECT * FROM books WHERE isbn = :keyword",
+                                {"keyword": keyword}).fetchall() 
+
+        return render_template('protected.html', books=books)
     else :
         books = db.execute("SELECT * FROM books").fetchall()
-        return render_template('protected.html', books=books)               
+    return render_template('protected.html', books=books)               
        
 #log out page
 @app.route('/logout')

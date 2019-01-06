@@ -5,3 +5,9 @@ CREATE TABLE books (
     author VARCHAR NOT NULL,
     year INTEGER NOT NULL 
 );
+
+
+"SELECT * FROM books WHERE :searchtype = :keyword",
+                             {"searchtype": searchtype, "keyword": keyword}).fetchall() 
+
+SELECT * FROM books Where year = '1998';                          
