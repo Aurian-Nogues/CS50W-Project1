@@ -1,0 +1,50 @@
+{% extends "layout.html" %}
+
+{% block heading %}
+{% endblock %}
+
+{% block body1 %}
+
+</br>
+      
+<h2>This is how your review will appear</h2>
+
+{% endblock %}
+
+{% block body2 %}
+
+</br>
+<span class="fa fa-star checked"></span>
+<span class="fa fa-star checked"></span>
+<span class="fa fa-star checked"></span>
+<span class="fa fa-star"></span>
+<span class="fa fa-star"></span>
+<h1>{{review}}</h1>
+<h1>{{rating}}</h1>
+ 
+</br>
+
+<table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">rating</th>
+            <th scope="col">user</th>
+            <th scope="col">title</th>
+            <th scope="col">author</th>
+            <th scope="col">review</th>
+          </tr>
+        </thead>
+
+        <tbody>
+                <tr>
+                    <td>{{rating}}</td>
+                    <td>{{session['user']}}</td>
+                    <td>text</td>
+                    <td>text</td>
+                    <td>text</td>
+                </tr>
+        </tbody>
+      </table>
+
+
+{% endblock %}

@@ -11,3 +11,8 @@ p {
 .book-links {
     color: red;
 }
+
+/*class to colour the ratings star  */
+.checked {
+    color: orange;
+  }

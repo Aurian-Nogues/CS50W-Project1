@@ -33,7 +33,7 @@ def index():
         user = db.execute("SELECT id, login, password FROM users WHERE login = :login", {"login": submitted_username}).fetchone()
     
         if db.execute("SELECT id, login, password FROM users WHERE login = :login", {"login": submitted_username}).rowcount == 0:
-            error=("User not found in database")
+            error=("Username doesn't exist, please check spelling or create an account")
             return render_template("failed.html", error=error)
         elif submitted_password != user.password:
             error=("Wrong password")
@@ -107,9 +107,8 @@ def book():
     if request.method == "POST" :
         review = request.form['review']
         rating = request.form['rating']
-       # if review == "":
-        #    review = "You submitted an empty review"
-        return render_template('book.html', review=review, rating=rating)
+        user = session['user']
+        return render_template('review.html', review=review, rating=rating)
 
     return render_template('book.html')
 
