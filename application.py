@@ -101,16 +101,19 @@ def search():
     return render_template('search.html', books=books)          
 
 #book page
-@app.route('/book/<int:isbn>', methods = ['POST', 'GET'])
-def book(isbn):
-
+@app.route('/book/<int:id>', methods = ['POST', 'GET'])
+def book(id):
+    
+    session['id'] = id
+    book = db.execute("SELECT * FROM books WHERE id = :id", {"id": id}).fetchone()
+    
     if request.method == "POST" :
-        review = request.form['review']
-        rating = request.form['rating']
-        user = session['user']
-        return render_template('review.html', review=review, rating=rating)
+        session['review'] = request.form['review']
+        session['rating'] = request.form['rating']
+        
+        return render_template('review.html')
 
-    return render_template('book.html')
+    return render_template('book.html', book=book)
 
 #log out page
 @app.route('/logout')
