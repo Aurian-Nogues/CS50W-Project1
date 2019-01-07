@@ -101,8 +101,8 @@ def search():
     return render_template('search.html', books=books)          
 
 #book page
-@app.route('/book', methods = ['POST', 'GET'])
-def book():
+@app.route('/book/<int:isbn>', methods = ['POST', 'GET'])
+def book(isbn):
 
     if request.method == "POST" :
         review = request.form['review']
