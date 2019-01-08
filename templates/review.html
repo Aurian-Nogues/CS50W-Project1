@@ -9,7 +9,7 @@
       
 <form method ="POST">
         <div class="form-group">
-                <label for="exampleFormControlTextarea1">Write your review</label>
+                <label for="exampleFormControlTextarea1">Edit your review:</label>
                 <textarea class="form-control" name=review id="exampleFormControlTextarea1" rows="12"></textarea>
               </div>
        
@@ -39,18 +39,20 @@
         
         </br>
     </br>
-        <button type="submit" class="btn btn-dark">Edit review</button>
-      </form>
+        <div>   
+                <input type="submit" name="status" value="Replace" class="btn btn-dark"> 
+        </div>
+    </form>
       
-
+<h1></h1>
 {% endblock %}
 
 {% block body2 %}
 </br>
-
+</br>
+<h2>{{session['book'].title}}</h2>
+<h6>{{session['book'].author}}</h6>
 <table class="table table-striped">
-        <h2>{{session['title']}}</h2>
-        <h6>{{session['author']}}</h6>
         <thead>
           <tr>
             <th scope="col">rating</th>
@@ -112,6 +114,11 @@
                 </tr>
         </tbody>
       </table>
-      <button type="submit" class="btn btn-dark">Confirm and submit</button>
 
+      <form method = "POST">
+      <input type="submit" name="status" value="Confirm" class="btn btn-dark"> 
+
+      </form>
+<!--       <button type="submit" class="btn btn-dark">Confirm and submit</button>
+ -->
 {% endblock %}

@@ -39,7 +39,7 @@
         
         </br>
     </br>
-        <button type="submit" class="btn btn-dark">Submit</button>
+    <input type="submit" name="status" value="Submit" class="btn btn-dark"> 
       </form>
 
 {% endblock %}
@@ -47,7 +47,8 @@
 {% block body2 %}
 
 </br>
-<h2>{{book.title}}</h2>
-<h6>{{book.author}}</h6>
+<h2>{{session['book'].title}}</h2>
+<h6>{{session['book'].author}}</h6>
+<h6>{{test}}</h6>
 
 {% endblock %}

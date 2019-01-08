@@ -105,15 +105,20 @@ def search():
 def book(id):
     
     session['id'] = id
-    book = db.execute("SELECT * FROM books WHERE id = :id", {"id": id}).fetchone()
+    session['book'] = db.execute("SELECT * FROM books WHERE id = :id", {"id": id}).fetchone()
     
-    if request.method == "POST" :
-        session['review'] = request.form['review']
-        session['rating'] = request.form['rating']
-        
-        return render_template('review.html')
+    if request.method == "POST" : 
+        if request.form['status'] == 'Confirm':
+                test="review validated"
+                return render_template('book.html', test=test)
+    
+        else:   
+                session['review'] = request.form['review']
+                session['rating'] = request.form['rating']
+            
+                return render_template('review.html')
 
-    return render_template('book.html', book=book)
+    return render_template('book.html')
 
 #log out page
 @app.route('/logout')
