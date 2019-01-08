@@ -103,20 +103,28 @@ def search():
 #book page
 @app.route('/book/<int:id>', methods = ['POST', 'GET'])
 def book(id):
-    
-    session['id'] = id
-    session['book'] = db.execute("SELECT * FROM books WHERE id = :id", {"id": id}).fetchone()
-    
+        
     if request.method == "POST" : 
         if request.form['status'] == 'Confirm':
-                test="review validated"
-                return render_template('book.html', test=test)
+
+            isbn = session['book'].isbn
+            username = session['user']
+            review = session['review']
+            rating = session['rating']
+            db.execute("INSERT INTO reviews (isbn, username, review, rating) Values (:isbn, :username, :review, :rating)", {"isbn": isbn, "username": username, "review": review, "rating": rating})
+            db.commit()
+        
+
+            return render_template('book.html', isbn=isbn,username=username,review=review,rating=rating)
     
         else:   
-                session['review'] = request.form['review']
-                session['rating'] = request.form['rating']
-            
-                return render_template('review.html')
+            session['review'] = request.form['review']
+            session['rating'] = request.form['rating']
+
+            return render_template('review.html')
+
+    session['id'] = id
+    session['book'] = db.execute("SELECT * FROM books WHERE id = :id", {"id": id}).fetchone()
 
     return render_template('book.html')
 
