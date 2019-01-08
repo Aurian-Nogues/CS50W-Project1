@@ -10,4 +10,11 @@ CREATE TABLE books (
 "SELECT * FROM books WHERE :searchtype = :keyword",
                              {"searchtype": searchtype, "keyword": keyword}).fetchall() 
 
-SELECT * FROM books Where year = '1998';                          
+SELECT * FROM books Where year = '1998';      
+
+SELECT weather.city, weather.temp_lo, weather.temp_hi,
+       weather.prcp, weather.date, cities.location
+    FROM weather, cities
+    WHERE cities.name = weather.city;
+
+SELECT * from reviews, books WHERE books.isbn = reviews.isbn;

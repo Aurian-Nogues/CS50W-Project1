@@ -4,63 +4,33 @@
 {% endblock %}
 
 {% block body1 %}
-
-</br>
-      
-<form method ="POST">
-        <div class="form-group">
-                <label for="exampleFormControlTextarea1">Write your review</label>
-                <textarea class="form-control" name=review id="exampleFormControlTextarea1" rows="12"></textarea>
-              </div>
-       
-            </br>
-            <label for="exampleFormControlTextarea1">Choose your rating</label>
-
-        <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" checked="" name="rating" id="inlineRadio2" type = "number" value=1>
-            <label class="form-check-label btn-default" for="inlineRadio2">1</label>
-            </div>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="rating" id="inlineRadio2" type = "number" value=2>
-                <label class="form-check-label" for="inlineRadio2">2</label>
-            </div>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="rating" id="inlineRadio2" type = "number" value=3>
-                <label class="form-check-label" for="inlineRadio2">3</label>
-            </div>
-            <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="rating" id="inlineRadio2" type = "number" value=4>
-                    <label class="form-check-label" for="inlineRadio2">4</label>
-            </div>
-            <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="rating" id="inlineRadio2" type = "number" value=5>
-                    <label class="form-check-label" for="inlineRadio2">5</label>
-            </div>
-        
-        </br>
-    </br>
-    <input type="submit" name="status" value="Submit" class="btn btn-dark"> 
-      </form>
-
 {% endblock %}
 
 {% block body2 %}
 
+<p>this is my reviews</p>
+
+
+
 </br>
-<h2>{{session['book'].title}}</h2>
-<h6>{{session['book'].author}}</h6>
+
 <table class="table table-striped">
         <thead>
           <tr>
+            <th scope="col">title</th>
+            <th scope="col">author</th>
             <th scope="col">rating</th>
-            <th scope="col">user</th>
             <th scope="col">review</th>
+            <th scope="col">user</th>
           </tr>
         </thead>
 
         <tbody>
                 {% for review in reviews %}
                 <tr>
+                        <td>{{review.title}}</td>
+                        <td>{{review.author}}</td>
+
                         {% if review.rating == 1 %}
                         <td>
                         <span class="fa fa-star checked"></span>
@@ -102,8 +72,9 @@
                         <span class="fa fa-star checked"></span>
                         </td>  
                         {% endif %}
-                    <td>{{review.username}}</td>
+
                     <td>{{review.review}}</td>
+                    <td>{{review.username}}</td>
                 </tr>
                 {% endfor %}
         </tbody>

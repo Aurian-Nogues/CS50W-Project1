@@ -105,6 +105,7 @@ def search():
 def book(id):
         
     if request.method == "POST" : 
+        #route if you submit a review then confirm it
         if request.form['status'] == 'Confirm':
 
             isbn = session['book'].isbn
@@ -113,20 +114,44 @@ def book(id):
             rating = session['rating']
             db.execute("INSERT INTO reviews (isbn, username, review, rating) Values (:isbn, :username, :review, :rating)", {"isbn": isbn, "username": username, "review": review, "rating": rating})
             db.commit()
-        
 
-            return render_template('book.html', isbn=isbn,username=username,review=review,rating=rating)
-    
+            reviews = db.execute("SELECT * FROM reviews WHERE isbn = :isbn ORDER BY id DESC" ,
+                                {"isbn": isbn}).fetchall()
+
+            return render_template('book.html', reviews=reviews)
+        #route if you submit a review or edit it
         else:   
             session['review'] = request.form['review']
             session['rating'] = request.form['rating']
-
             return render_template('review.html')
 
+    #route if you arrive on the book page from a search
     session['id'] = id
     session['book'] = db.execute("SELECT * FROM books WHERE id = :id", {"id": id}).fetchone()
+    isbn = session['book'].isbn
+    reviews = db.execute("SELECT * FROM reviews WHERE isbn = :isbn ORDER BY id DESC",
+                                {"isbn": isbn}).fetchall()
+    return render_template('book.html', reviews=reviews)
 
-    return render_template('book.html')
+#display all reviews
+@app.route('/allReviews')
+def allReviews():
+    reviews = db.execute("SELECT * from reviews INNER JOIN books ON reviews.isbn = books.isbn").fetchall()
+
+    return render_template('allReviews.html', reviews=reviews)
+
+#display my reviews reviews
+@app.route('/myReviews')
+def myReviews():
+    username = session['user']
+    reviews = db.execute("SELECT * from reviews INNER JOIN books ON reviews.isbn = books.isbn WHERE username = :username", {"username": username}).fetchall()
+
+    return render_template('myReviews.html', reviews=reviews)
+
+
+
+
+
 
 #log out page
 @app.route('/logout')
