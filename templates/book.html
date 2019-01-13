@@ -5,6 +5,8 @@
 
 {% block body1 %}
 
+{% if reviewed != "reviewed" %}
+
 </br>
       
 <form method ="POST">
@@ -41,6 +43,12 @@
     </br>
     <input type="submit" name="status" value="Submit" class="btn btn-dark"> 
       </form>
+
+      {% elif reviewed == 'reviewed' %}
+      <br/>
+      <h5>You already reviewed this book, thank you for your contribution !</h5>
+
+      {% endif %}
 
 {% endblock %}
 

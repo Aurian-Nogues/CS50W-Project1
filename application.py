@@ -104,21 +104,25 @@ def search():
 @app.route('/book/<int:id>', methods = ['POST', 'GET'])
 def book(id):
         
+
+
     if request.method == "POST" : 
         #route if you submit a review then confirm it
         if request.form['status'] == 'Confirm':
 
             isbn = session['book'].isbn
-            username = session['user']
             review = session['review']
             rating = session['rating']
+            username = session['user']
             db.execute("INSERT INTO reviews (isbn, username, review, rating) Values (:isbn, :username, :review, :rating)", {"isbn": isbn, "username": username, "review": review, "rating": rating})
             db.commit()
 
             reviews = db.execute("SELECT * FROM reviews WHERE isbn = :isbn ORDER BY id DESC" ,
                                 {"isbn": isbn}).fetchall()
 
-            return render_template('book.html', reviews=reviews)
+            reviewed = 'reviewed'
+
+            return render_template('book.html', reviews=reviews, reviewed = reviewed)
         #route if you submit a review or edit it
         else:   
             session['review'] = request.form['review']
@@ -131,7 +135,19 @@ def book(id):
     isbn = session['book'].isbn
     reviews = db.execute("SELECT * FROM reviews WHERE isbn = :isbn ORDER BY id DESC",
                                 {"isbn": isbn}).fetchall()
-    return render_template('book.html', reviews=reviews)
+
+        #test if user already reviewed the book
+    title = session['book'].title
+    username = session['user']
+    reviewed = None
+    reviewed = db.execute("SELECT * from reviews INNER JOIN books ON reviews.isbn = books.isbn WHERE title = :title and username = :username", {"title": title, "username": username}).fetchone()
+    if reviewed is None:
+       reviewed = 'not reviewed'
+    else:
+        reviewed = 'reviewed'
+
+       
+    return render_template('book.html', reviews=reviews, reviewed = reviewed)
 
 #display all reviews
 @app.route('/allReviews')
@@ -144,6 +160,7 @@ def allReviews():
 @app.route('/myReviews')
 def myReviews():
     username = session['user']
+    title = session['book'].title
     reviews = db.execute("SELECT * from reviews INNER JOIN books ON reviews.isbn = books.isbn WHERE username = :username", {"username": username}).fetchall()
 
     return render_template('myReviews.html', reviews=reviews)

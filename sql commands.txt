@@ -18,3 +18,6 @@ SELECT weather.city, weather.temp_lo, weather.temp_hi,
     WHERE cities.name = weather.city;
 
 SELECT * from reviews, books WHERE books.isbn = reviews.isbn;
+
+SELECT * from reviews INNER JOIN books ON reviews.isbn = books.isbn WHERE isbn = '0060929871' and username = 'Aurian'
+SELECT * from reviews INNER JOIN books ON reviews.isbn = books.isbn WHERE username = 'Aurian' AND title = 'Candide';
