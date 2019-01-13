@@ -72,7 +72,9 @@ def register():
 @app.route('/search', methods= ['POST', 'GET'])
 def search():
 
+
     if request.method == 'POST' :
+        books = None
         searchtype = request.form['searchtype']
         keyword = request.form['keyword']
 
@@ -82,6 +84,7 @@ def search():
         elif searchtype == "year":
             books = db.execute("SELECT * FROM books WHERE year = :keyword",
                                 {"keyword": keyword}).fetchall()
+
         elif searchtype == "title":
             keyword = f'%{keyword}%'
             books = db.execute("SELECT * FROM books WHERE title ILIKE :keyword",
@@ -94,7 +97,7 @@ def search():
             keyword = f'%{keyword}%'
             books = db.execute("SELECT * FROM books WHERE isbn ILIKE :keyword",
                                 {"keyword": keyword}).fetchall() 
-      
+        
         return render_template('search.html', books=books)
     else :
         books = db.execute("SELECT * FROM books").fetchall()
