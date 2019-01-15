@@ -1,5 +1,5 @@
 import os
-
+import requests
 from flask import Flask, session, render_template, redirect, request, url_for, g
 from flask_session import Session
 from sqlalchemy import create_engine
@@ -72,7 +72,6 @@ def register():
 @app.route('/search', methods= ['POST', 'GET'])
 def search():
 
-
     if request.method == 'POST' :
         books = None
         searchtype = request.form['searchtype']
@@ -106,14 +105,23 @@ def search():
 #book page
 @app.route('/book/<int:id>', methods = ['POST', 'GET'])
 def book(id):
-        
+
+    #use goodreads API to get book rating and number of ratings
+    isbn = session['book'].isbn
+    avgRating = None
+    nbrRatings = None
+
+    res = requests.get("https://www.goodreads.com/book/review_counts.json", params={"key": "sAEPXUb5EvhHgSe5ECViNQ", "isbns": isbn})
+    data = res.json()
+    avgRating = data['books'][0]['average_rating']
+    nbrRatings = data['books'][0]['work_ratings_count']
 
 
     if request.method == "POST" : 
         #route if you submit a review then confirm it
         if request.form['status'] == 'Confirm':
 
-            isbn = session['book'].isbn
+            
             review = session['review']
             rating = session['rating']
             username = session['user']
@@ -125,7 +133,8 @@ def book(id):
 
             reviewed = 'reviewed'
 
-            return render_template('book.html', reviews=reviews, reviewed = reviewed)
+            return render_template('book.html', reviews=reviews, reviewed = reviewed, avgRating = avgRating,nbrRatings = nbrRatings )
+        
         #route if you submit a review or edit it
         else:   
             session['review'] = request.form['review']
@@ -139,7 +148,7 @@ def book(id):
     reviews = db.execute("SELECT * FROM reviews WHERE isbn = :isbn ORDER BY id DESC",
                                 {"isbn": isbn}).fetchall()
 
-        #test if user already reviewed the book
+    #test if user already reviewed the book
     title = session['book'].title
     username = session['user']
     reviewed = None
@@ -148,9 +157,8 @@ def book(id):
        reviewed = 'not reviewed'
     else:
         reviewed = 'reviewed'
-
-       
-    return render_template('book.html', reviews=reviews, reviewed = reviewed)
+      
+    return render_template('book.html', reviews=reviews, reviewed = reviewed, avgRating = avgRating,nbrRatings = nbrRatings)
 
 #display all reviews
 @app.route('/allReviews')
@@ -167,10 +175,6 @@ def myReviews():
     reviews = db.execute("SELECT * from reviews INNER JOIN books ON reviews.isbn = books.isbn WHERE username = :username", {"username": username}).fetchall()
 
     return render_template('myReviews.html', reviews=reviews)
-
-
-
-
 
 
 #log out page
