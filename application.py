@@ -1,12 +1,12 @@
 import os
 import requests
-from flask import Flask, session, render_template, redirect, request, url_for, g
+from flask import Flask, session, render_template, redirect, request, url_for, jsonify
 from flask_session import Session
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 
 app = Flask(__name__)
-app.secret_key = os.urandom(24)
+app.config['JSON_SORT_KEYS'] = False
 
 # Check for environment variable
 if not os.getenv("DATABASE_URL"):
@@ -106,17 +106,6 @@ def search():
 @app.route('/book/<int:id>', methods = ['POST', 'GET'])
 def book(id):
 
-    #use goodreads API to get book rating and number of ratings
-    isbn = session['book'].isbn
-    avgRating = None
-    nbrRatings = None
-
-    res = requests.get("https://www.goodreads.com/book/review_counts.json", params={"key": "sAEPXUb5EvhHgSe5ECViNQ", "isbns": isbn})
-    data = res.json()
-    avgRating = data['books'][0]['average_rating']
-    nbrRatings = data['books'][0]['work_ratings_count']
-
-
     if request.method == "POST" : 
         #route if you submit a review then confirm it
         if request.form['status'] == 'Confirm':
@@ -125,6 +114,9 @@ def book(id):
             review = session['review']
             rating = session['rating']
             username = session['user']
+            avgRating = session['avgRating']
+            nbrRatings = session['nbrRatings']
+            isbn = session['book'].isbn
             db.execute("INSERT INTO reviews (isbn, username, review, rating) Values (:isbn, :username, :review, :rating)", {"isbn": isbn, "username": username, "review": review, "rating": rating})
             db.commit()
 
@@ -142,16 +134,26 @@ def book(id):
             return render_template('review.html')
 
     #route if you arrive on the book page from a search
+    
     session['id'] = id
     session['book'] = db.execute("SELECT * FROM books WHERE id = :id", {"id": id}).fetchone()
     isbn = session['book'].isbn
     reviews = db.execute("SELECT * FROM reviews WHERE isbn = :isbn ORDER BY id DESC",
                                 {"isbn": isbn}).fetchall()
 
+    #use goodreads API to get book rating and number of ratings
+
+    res = requests.get("https://www.goodreads.com/book/review_counts.json", params={"key": "sAEPXUb5EvhHgSe5ECViNQ", "isbns": isbn})
+    data = res.json()
+    session['avgRating'] = data['books'][0]['average_rating']
+    session['nbrRatings'] = data['books'][0]['work_ratings_count']
+
+    avgRating = session['avgRating']
+    nbrRatings = session['nbrRatings']
+    
     #test if user already reviewed the book
     title = session['book'].title
     username = session['user']
-    reviewed = None
     reviewed = db.execute("SELECT * from reviews INNER JOIN books ON reviews.isbn = books.isbn WHERE title = :title and username = :username", {"title": title, "username": username}).fetchone()
     if reviewed is None:
        reviewed = 'not reviewed'
@@ -190,3 +192,33 @@ def getsession():
     
     return 'not logged in!'
  
+
+@app.route("/api/<isbn>")
+
+def book_api(isbn):
+
+    book = db.execute("SELECT * FROM books WHERE isbn = :isbn",
+                                {"isbn": isbn}).fetchone()
+    if book is None:
+        return jsonify({
+            "error": "isbn not found"
+        }), 404
+
+    res = requests.get("https://www.goodreads.com/book/review_counts.json", params={"key": "sAEPXUb5EvhHgSe5ECViNQ", "isbns": isbn})
+    data = res.json()
+
+
+    title = book.title
+    author = book.author
+    year = book.year
+    reviews = data['books'][0]['work_ratings_count']
+    score = data['books'][0]['average_rating']
+
+    return jsonify({
+        "title": title,
+        "author": author,
+        "year": year,
+        "isbn": isbn,
+        "review_count": reviews,
+        "average_score": score
+    })
