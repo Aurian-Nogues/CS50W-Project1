@@ -55,9 +55,8 @@
 </br>
 <h2>{{session['book'].title}}</h2>
 <h5>{{session['book'].author}}, {{session['book'].year}} </h5>
-<h6>Average rating {{avgRating}} from {{nbrRatings}} reviewers</h6>
-
-<h6>ISBN {{session['book'].isbn}} </h6>
+<h6 id="reviews">Average rating {{avgRating}} from {{nbrRatings}} reviewers</h6>
+<h6 id="isbn">ISBN {{session['book'].isbn}} </h6>
 
 <table class="table table-striped">
         <thead>

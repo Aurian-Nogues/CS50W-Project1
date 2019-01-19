@@ -1,12 +1,5 @@
-h1 {
-    color: red;
-}
-
-p {
-    font-family: sans-serif;
-    font-size: 50px;
-    color:green;
-}
+/* make book links appear black and not blue like default hyperlinks
+ */
 
 .book-links {
     color: black;
@@ -16,3 +9,13 @@ p {
 .checked {
     color: orange;
   }
+
+#reviews{
+    font-size: 14px;
+
+}
+#isbn{
+    font-size: 13px;
+    font-weight: normal;
+
+}

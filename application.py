@@ -102,12 +102,12 @@ def search():
         books = db.execute("SELECT * FROM books").fetchall()
     return render_template('search.html', books=books)          
 
-#book page
+#book page, can be accessed through 3 different ways
 @app.route('/book/<int:id>', methods = ['POST', 'GET'])
 def book(id):
 
     if request.method == "POST" : 
-        #route if you submit a review then confirm it
+        #route if you submit a review then confirm it (get there because the form returns status = confirm)
         if request.form['status'] == 'Confirm':
 
             
@@ -127,14 +127,13 @@ def book(id):
 
             return render_template('book.html', reviews=reviews, reviewed = reviewed, avgRating = avgRating,nbrRatings = nbrRatings )
         
-        #route if you submit a review or edit it
+        #route if you submit a review or edit it (request form did not return status = confirm so you arrive here)
         else:   
             session['review'] = request.form['review']
             session['rating'] = request.form['rating']
             return render_template('review.html')
 
-    #route if you arrive on the book page from a search
-    
+    #route if you arrive on the book page from a search (request was GET, not POST so you arrive here)
     session['id'] = id
     session['book'] = db.execute("SELECT * FROM books WHERE id = :id", {"id": id}).fetchone()
     isbn = session['book'].isbn
@@ -142,7 +141,6 @@ def book(id):
                                 {"isbn": isbn}).fetchall()
 
     #use goodreads API to get book rating and number of ratings
-
     res = requests.get("https://www.goodreads.com/book/review_counts.json", params={"key": "sAEPXUb5EvhHgSe5ECViNQ", "isbns": isbn})
     data = res.json()
     session['avgRating'] = data['books'][0]['average_rating']
@@ -178,25 +176,17 @@ def myReviews():
 
     return render_template('myReviews.html', reviews=reviews)
 
-
 #log out page
 @app.route('/logout')
 def logout():
     session.pop('user', None)
     return render_template('logout.html')
 
-@app.route('/getsession')
-def getsession():
-    if 'user' in session:
-        return session ['user']
-    
-    return 'not logged in!'
- 
-
+#API, handles requests from users and returns goodread + PSQL database data
 @app.route("/api/<isbn>")
-
 def book_api(isbn):
 
+    #test if the isbn exists in database, if it doesn't return a 404 error
     book = db.execute("SELECT * FROM books WHERE isbn = :isbn",
                                 {"isbn": isbn}).fetchone()
     if book is None:
@@ -204,10 +194,11 @@ def book_api(isbn):
             "error": "isbn not found"
         }), 404
 
+    #if ISBN exist, send request to Goodreads API and get info 
     res = requests.get("https://www.goodreads.com/book/review_counts.json", params={"key": "sAEPXUb5EvhHgSe5ECViNQ", "isbns": isbn})
     data = res.json()
 
-
+    #assign goodreads + internal database data to variables and return in Json format
     title = book.title
     author = book.author
     year = book.year
